@@ -1,8 +1,10 @@
 import "./index.css";
 import { auth, provider } from "../../config/firebase-config";
 import { signInWithPopup } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { userGetUserInfo } from "../../hooks/useGetUserInfo";
 const Auth = () => {
+  const { isAuth } = userGetUserInfo();
   const navigate = useNavigate();
   const signInWitGoogle = async () => {
     const results = await signInWithPopup(auth, provider);
@@ -16,8 +18,12 @@ const Auth = () => {
     localStorage.setItem("auth", JSON.stringify(authInfo));
     navigate("/expense-tracker");
     console.log(results);
-    console.log("akshai");
   };
+
+  if (isAuth) {
+    return <Navigate to="/expense-tracker" />;
+  }
+
   return (
     <div className="login-page">
       <p className="login-heading">Sign in with Google to Continue</p>
